@@ -1,7 +1,7 @@
-"""Tests for Week 3 — INSERT statement testing.
+"""Tests for Week 3 — SQL query and INSERT statement testing.
 
-Each test runs an INSERT from the lab notebook, then queries
-filtered_employees to verify the correct rows were inserted.
+Exercises 1-2: run a SELECT COUNT query and assert the returned count.
+Exercises 3-4: run an INSERT, then query filtered_employees to verify results.
 
 Uses Employee/HR domain data (different from bookstore in weeks 4-6).
 """
@@ -29,17 +29,15 @@ def _run_cell(spark, pattern):
 # ===========================================================================
 
 def test_valid_email_filter(spark):
-    """Verify that only employees with valid emails are inserted."""
-    _run_cell(spark, "valid_email_filter")
-    rows = spark.sql("SELECT * FROM week3_testing.filtered_employees").collect()
-    # TODO: assert len(rows) equals the number of employees with a valid email
+    """Verify that the count of employees with valid emails is correct."""
+    rows = _run_cell(spark, "valid_email_filter").collect()
+    # TODO: assert rows[0].valid_email_count equals the number of employees with a valid email
 
 
 def test_employees_in_salary_range(spark):
-    """Verify that only employees in the salary range are inserted."""
-    _run_cell(spark, "employees_in_salary_range")
-    rows = spark.sql("SELECT * FROM week3_testing.filtered_employees").collect()
-    # TODO: assert len(rows) equals the number of employees with salary between $50,000 and $100,000
+    """Verify that the count of employees in the salary range is correct."""
+    rows = _run_cell(spark, "employees_in_salary_range").collect()
+    # TODO: assert rows[0].employee_count equals the number of employees with salary between $50,000 and $100,000
 
 
 def test_recent_hires(spark):
