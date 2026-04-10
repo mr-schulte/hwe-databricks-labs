@@ -2,6 +2,8 @@
 CLAUDE.md
 
 # Python
+.python-version
+pyproject.toml
 __pycache__/
 *.py[cod]
 *.pyo
