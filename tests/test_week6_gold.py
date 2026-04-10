@@ -29,9 +29,9 @@ def _run_cell(spark, pattern):
 
 def test_dim_customer_from_silver(spark):
     _run_cell(spark, "gold_dim_customer_merge")
-    emails = {r.email for r in spark.sql("SELECT email FROM gold.dim_customer").collect()}
-    # emails is a Python set of strings
-    # TODO: assert that 'alice@example.com' and 'bob@example.com' are in `emails`
+    alice = spark.sql("SELECT * FROM gold.dim_customer WHERE email = 'alice@example.com'").collect()
+    bob = spark.sql("SELECT * FROM gold.dim_customer WHERE email = 'bob@example.com'").collect()
+    # TODO: assert len(alice) equals 1 and len(bob) equals 1
 
 
 def test_dim_customer_sentinel(spark):
@@ -50,9 +50,8 @@ def test_dim_customer_sentinel(spark):
 
 def test_dim_store_from_silver(spark):
     _run_cell(spark, "gold_dim_store_merge")
-    store_nbrs = {r.store_nbr for r in spark.sql("SELECT store_nbr FROM gold.dim_store").collect()}
-    # store_nbrs is a Python set of strings
-    # TODO: assert that 'S001' is in `store_nbrs`
+    store = spark.sql("SELECT * FROM gold.dim_store WHERE store_nbr = 'S001'").collect()
+    # TODO: assert len(store) equals 1
 
 
 def test_dim_store_sentinel(spark):
@@ -83,12 +82,13 @@ def test_dim_book_flattens_hierarchy(spark):
 
 def test_fact_sales_all_items_present(spark):
     _run_cell(spark, "gold_fact_sales_merge")
-    order_ids = {r.order_id for r in spark.sql("SELECT order_id FROM gold.fact_sales").collect()}
+    onl_001 = spark.sql("SELECT * FROM gold.fact_sales WHERE order_id = 'ONL-001'").collect()
+    onl_002 = spark.sql("SELECT * FROM gold.fact_sales WHERE order_id = 'ONL-002'").collect()
+    ins_001 = spark.sql("SELECT * FROM gold.fact_sales WHERE order_id = 'INS-001'").collect()
     ins_002_count = spark.sql(
         "SELECT COUNT(*) AS cnt FROM gold.fact_sales WHERE order_id = 'INS-002'"
     ).collect()[0].cnt
-    # order_ids is a Python set of strings; ins_002_count is an integer
-    # TODO: assert ONL-001, ONL-002, INS-001 are in order_ids, and ins_002_count equals 2
+    # TODO: assert len(onl_001), len(onl_002), len(ins_001) each equal 1, and ins_002_count equals 2
     # (INS-002 had 2 line items, so it should produce 2 fact rows)
 
 
@@ -118,14 +118,12 @@ def test_fact_sales_fk_lookups(spark):
 
 def test_fact_sales_degenerate_dims(spark):
     _run_cell(spark, "gold_fact_sales_merge")
-    order_ids = {r.order_id for r in spark.sql("SELECT order_id FROM gold.fact_sales").collect()}
-    channels = {r.order_channel for r in spark.sql("SELECT order_channel FROM gold.fact_sales").collect()}
+    online = spark.sql("SELECT * FROM gold.fact_sales WHERE order_channel = 'online'").collect()
+    instore = spark.sql("SELECT * FROM gold.fact_sales WHERE order_channel = 'in-store'").collect()
     null_payment = spark.sql("""
         SELECT COUNT(*) AS cnt FROM gold.fact_sales WHERE payment_method IS NULL
     """).collect()[0].cnt
-    # order_ids and channels are Python sets; null_payment is an integer
-    # TODO: assert order_ids equals the expected set of order IDs, channels equals {'online', 'in-store'},
-    # and null_payment equals 0
+    # TODO: assert len(online) > 0, len(instore) > 0, and null_payment equals 0
 
 
 # ===========================================================================

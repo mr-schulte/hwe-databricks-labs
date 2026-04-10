@@ -28,16 +28,17 @@ def _run_cell(spark, pattern):
 
 def test_stores_insert_overwrite(spark):
     _run_cell(spark, "bronze_stores_load")
-    names = {r.name for r in spark.sql("SELECT name FROM bronze.stores").collect()}
-    # names is a Python set of strings
-    # TODO: assert that the expected store names are present in `names`
+    downtown = spark.sql("SELECT * FROM bronze.stores WHERE name = 'Downtown Books'").collect()
+    airport = spark.sql("SELECT * FROM bronze.stores WHERE name = 'Airport Books'").collect()
+    # TODO: assert len(downtown) equals 1 and len(airport) equals 1
 
 
 def test_categories_insert_overwrite(spark):
     _run_cell(spark, "bronze_categories_load")
-    ids = {r.category_id for r in spark.sql("SELECT category_id FROM bronze.categories").collect()}
-    # ids is a Python set of strings
-    # TODO: assert that the expected category IDs ('1', '3', '11') are present in `ids`
+    fiction = spark.sql("SELECT * FROM bronze.categories WHERE category_id = '1'").collect()
+    sci_fi = spark.sql("SELECT * FROM bronze.categories WHERE category_id = '3'").collect()
+    space_opera = spark.sql("SELECT * FROM bronze.categories WHERE category_id = '11'").collect()
+    # TODO: assert len(fiction), len(sci_fi), and len(space_opera) each equal 1
 
 
 def test_books_insert_overwrite(spark):

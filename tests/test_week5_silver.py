@@ -87,9 +87,10 @@ def test_categories_merge(spark):
 
 def test_books_filters_invalid_isbn(spark):
     _run_silver_books(spark)
-    isbns = {r.isbn for r in spark.sql("SELECT isbn FROM silver.books").collect()}
-    # isbns is a Python set of strings
-    # TODO: assert valid ISBNs are in `isbns` and 'BADISBN' is not
+    book1 = spark.sql("SELECT * FROM silver.books WHERE isbn = '978-0-00-000001-1'").collect()
+    book2 = spark.sql("SELECT * FROM silver.books WHERE isbn = '978-0-00-000002-2'").collect()
+    bad = spark.sql("SELECT * FROM silver.books WHERE isbn = 'BADISBN'").collect()
+    # TODO: assert len(book1) equals 1, len(book2) equals 1, and len(bad) equals 0
 
 
 def test_books_trims_whitespace(spark):
@@ -127,11 +128,12 @@ def test_customers_takes_most_recent(spark):
 
 def test_orders_unified(spark):
     _run_silver_orders(spark)
-    order_ids = {r.order_id for r in spark.sql("SELECT order_id FROM silver.orders").collect()}
-    channels = {r.order_channel for r in spark.sql("SELECT order_channel FROM silver.orders").collect()}
-    # order_ids and channels are Python sets of strings
-    # TODO: assert all 4 order IDs (ONL-001, ONL-002, INS-001, INS-002) are in order_ids,
-    # and channels contains exactly {'online', 'in-store'}
+    onl_001 = spark.sql("SELECT * FROM silver.orders WHERE order_id = 'ONL-001'").collect()
+    onl_002 = spark.sql("SELECT * FROM silver.orders WHERE order_id = 'ONL-002'").collect()
+    ins_001 = spark.sql("SELECT * FROM silver.orders WHERE order_id = 'INS-001'").collect()
+    ins_002 = spark.sql("SELECT * FROM silver.orders WHERE order_id = 'INS-002'").collect()
+    # TODO: assert len of each equals 1, and onl_001[0].order_channel equals 'online'
+    # and ins_001[0].order_channel equals 'in-store'
 
 
 def test_orders_online_sentinel(spark):
@@ -162,12 +164,12 @@ def test_orders_instore_null_email_sentinel(spark):
 
 def test_order_items_exploded(spark):
     _run_silver_order_items(spark)
-    order_ids = {r.order_id for r in spark.sql("SELECT order_id FROM silver.order_items").collect()}
+    onl_001 = spark.sql("SELECT * FROM silver.order_items WHERE order_id = 'ONL-001'").collect()
+    ins_001 = spark.sql("SELECT * FROM silver.order_items WHERE order_id = 'INS-001'").collect()
     ins_002_count = spark.sql(
         "SELECT COUNT(*) AS cnt FROM silver.order_items WHERE order_id = 'INS-002'"
     ).collect()[0].cnt
-    # order_ids is a Python set of strings; ins_002_count is an integer
-    # TODO: assert ONL-001 and INS-001 are in order_ids, and ins_002_count equals 2
+    # TODO: assert len(onl_001) equals 1, len(ins_001) equals 1, and ins_002_count equals 2
     # (INS-002 had 2 items in its JSON array, so it should explode into 2 rows)
 
 
