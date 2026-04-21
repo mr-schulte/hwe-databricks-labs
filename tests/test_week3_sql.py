@@ -22,28 +22,32 @@ def test_valid_email_filter(spark):
     """Verify that the count of employees with valid emails is correct."""
     _run_cell(spark, "valid_email_filter")
     rows = spark.sql("SELECT * FROM week3_testing.employees WHERE email LIKE '%@%'").collect()
-    # TODO: assert len(rows) equals the number of employees with a valid email
+    assert len(rows) == 3
+    # assert len(rows) equals the number of employees with a valid email
 
 
 def test_employees_in_salary_range(spark):
     """Verify that the count of employees in the salary range is correct."""
     _run_cell(spark, "employees_in_salary_range")
     rows = spark.sql("SELECT * FROM week3_testing.employees WHERE salary >= 50000 AND salary <= 100000").collect()
-    # TODO: assert len(rows) equals the number of employees with salary between $50,000 and $100,000
+    assert len(rows) == 4
+    # assert len(rows) equals the number of employees with salary between $50,000 and $100,000
 
 
 def test_recent_hires(spark):
     """Verify that only recent hires are inserted."""
     _run_cell(spark, "recent_hires")
     rows = spark.sql("SELECT * FROM week3_testing.filtered_employees").collect()
-    # TODO: assert len(rows) equals 1 and rows[0].employee_id equals 'EMP-006'
+    assert len(rows) == 1 and rows[0].employee_id == 'EMP-006'
+    # assert len(rows) equals 1 and rows[0].employee_id equals 'EMP-006'
 
 
 def test_engineering_department_filter(spark):
     """Verify that only Engineering employees are inserted."""
     _run_cell(spark, "engineering_department_filter")
     rows = spark.sql("SELECT * FROM week3_testing.filtered_employees").collect()
-    # TODO: assert len(rows) equals the number of Engineering employees
+    assert len(rows) == 2 and rows[0].department == 'Engineering'
+    # assert len(rows) equals the number of Engineering employees
 
 
 # ===========================================================================
