@@ -75,11 +75,12 @@ def spark(spark_session):
     ]:
         for sql in get_all_sql_cells(ddl_path):
             sql = sql.strip()
-            if not sql or sql.startswith("CREATE SCHEMA") or "USE CATALOG" in sql or _is_only_comments(sql):
+            sql_upper = sql.upper()
+            if not sql or sql_upper.startswith("CREATE SCHEMA") or "USE CATALOG" in sql_upper or _is_only_comments(sql):
                 continue
             if needs_strip:
                 sql = strip_identity(sql)
-            if "CREATE TABLE" in sql and "USING" not in sql:
+            if "CREATE TABLE" in sql_upper and "USING" not in sql_upper:
                 sql = re.sub(r"\)\s*$", ") USING DELTA", sql)
             spark_session.sql(sql)
 
