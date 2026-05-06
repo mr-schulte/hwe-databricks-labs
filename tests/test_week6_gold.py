@@ -27,6 +27,7 @@ def test_dim_customer_from_silver(spark):
 
 def test_dim_customer_sentinel(spark):
     _run_cell(spark, "gold_dim_customer_merge")
+    _run_cell(spark, "gold_dim_customer_sentinel_src")
     _run_cell(spark, "gold_dim_customer_sentinel")
     row = spark.sql("SELECT * FROM gold.dim_customer WHERE email = 'in-store'").collect()
     # row is a list of Row objects; row[0].name is a string
@@ -47,6 +48,7 @@ def test_dim_store_from_silver(spark):
 
 def test_dim_store_sentinel(spark):
     _run_cell(spark, "gold_dim_store_merge")
+    _run_cell(spark, "gold_dim_store_sentinel_src")
     _run_cell(spark, "gold_dim_store_sentinel")
     row = spark.sql("SELECT * FROM gold.dim_store WHERE store_nbr = 'online'").collect()
     # row is a list of Row objects; row[0].name is a string
@@ -59,6 +61,7 @@ def test_dim_store_sentinel(spark):
 # ---------------------------------------------------------------------------
 
 def test_dim_book_flattens_hierarchy(spark):
+    _run_cell(spark, "gold_dim_book_src")
     _run_cell(spark, "gold_dim_book_merge")
     book = spark.sql("SELECT * FROM gold.dim_book").collect()[0]
     # book is a Row object; .subgenre, .genre, .category are strings
