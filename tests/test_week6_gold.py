@@ -72,6 +72,7 @@ def test_dim_book_flattens_hierarchy(spark):
 # ---------------------------------------------------------------------------
 
 def test_fact_sales_all_items_present(spark):
+    _run_cell(spark, "gold_fact_sales_src")
     _run_cell(spark, "gold_fact_sales_merge")
     onl_001 = spark.sql("SELECT * FROM gold.fact_sales WHERE order_id = 'ONL-001'").collect()
     onl_002 = spark.sql("SELECT * FROM gold.fact_sales WHERE order_id = 'ONL-002'").collect()
@@ -83,6 +84,7 @@ def test_fact_sales_all_items_present(spark):
 
 
 def test_fact_sales_line_total(spark):
+    _run_cell(spark, "gold_fact_sales_src")
     _run_cell(spark, "gold_fact_sales_merge")
     mismatches = spark.sql("""
         SELECT * FROM gold.fact_sales
@@ -94,6 +96,7 @@ def test_fact_sales_line_total(spark):
 
 
 def test_fact_sales_fk_lookups(spark):
+    _run_cell(spark, "gold_fact_sales_src")
     _run_cell(spark, "gold_fact_sales_merge")
     null_cust = spark.sql("SELECT * FROM gold.fact_sales WHERE customer_id IS NULL").collect()
     null_book = spark.sql("SELECT * FROM gold.fact_sales WHERE book_id IS NULL").collect()
@@ -104,6 +107,7 @@ def test_fact_sales_fk_lookups(spark):
 
 
 def test_fact_sales_degenerate_dims(spark):
+    _run_cell(spark, "gold_fact_sales_src")
     _run_cell(spark, "gold_fact_sales_merge")
     online = spark.sql("SELECT * FROM gold.fact_sales WHERE order_channel = 'online'").collect()
     instore = spark.sql("SELECT * FROM gold.fact_sales WHERE order_channel = 'in-store'").collect()
