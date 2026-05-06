@@ -22,6 +22,7 @@ def test_dim_customer_from_silver(spark):
     alice = spark.sql("SELECT * FROM gold.dim_customer WHERE email = 'alice@example.com'").collect()
     bob = spark.sql("SELECT * FROM gold.dim_customer WHERE email = 'bob@example.com'").collect()
     # TODO: assert len(alice) equals 1 and len(bob) equals 1
+    pass  # Remove this line when you are ready to implement
 
 
 def test_dim_customer_sentinel(spark):
@@ -30,6 +31,7 @@ def test_dim_customer_sentinel(spark):
     row = spark.sql("SELECT * FROM gold.dim_customer WHERE email = 'in-store'").collect()
     # row is a list of Row objects; row[0].name is a string
     # TODO: assert that row[0].name equals 'In-Store Customer'
+    pass  # Remove this line when you are ready to implement
 
 
 # ---------------------------------------------------------------------------
@@ -40,6 +42,7 @@ def test_dim_store_from_silver(spark):
     _run_cell(spark, "gold_dim_store_merge")
     store = spark.sql("SELECT * FROM gold.dim_store WHERE store_nbr = 'S001'").collect()
     # TODO: assert len(store) equals 1
+    pass  # Remove this line when you are ready to implement
 
 
 def test_dim_store_sentinel(spark):
@@ -48,6 +51,7 @@ def test_dim_store_sentinel(spark):
     row = spark.sql("SELECT * FROM gold.dim_store WHERE store_nbr = 'online'").collect()
     # row is a list of Row objects; row[0].name is a string
     # TODO: assert that row[0].name equals 'Online'
+    pass  # Remove this line when you are ready to implement
 
 
 # ---------------------------------------------------------------------------
@@ -60,6 +64,7 @@ def test_dim_book_flattens_hierarchy(spark):
     # book is a Row object; .subgenre, .genre, .category are strings
     # TODO: assert that book.subgenre, book.genre, and book.category are correctly flattened:
     # subgenre = 'Space Opera', genre = 'Science Fiction', category = 'Fiction'
+    pass  # Remove this line when you are ready to implement
 
 
 # ---------------------------------------------------------------------------
@@ -74,6 +79,7 @@ def test_fact_sales_all_items_present(spark):
     ins_002 = spark.sql("SELECT * FROM gold.fact_sales WHERE order_id = 'INS-002'").collect()
     # TODO: assert len(onl_001), len(onl_002), len(ins_001) each equal 1, and len(ins_002) equals 2
     # (INS-002 had 2 line items, so it should produce 2 fact rows)
+    pass  # Remove this line when you are ready to implement
 
 
 def test_fact_sales_line_total(spark):
@@ -84,6 +90,7 @@ def test_fact_sales_line_total(spark):
     """).collect()
     # mismatches is a list of Row objects (you want it to have length 0)
     # TODO: assert that mismatches is empty (line_total should equal quantity * unit_price for every row)
+    pass  # Remove this line when you are ready to implement
 
 
 def test_fact_sales_fk_lookups(spark):
@@ -93,6 +100,7 @@ def test_fact_sales_fk_lookups(spark):
     null_date = spark.sql("SELECT * FROM gold.fact_sales WHERE date_id IS NULL").collect()
     null_store = spark.sql("SELECT * FROM gold.fact_sales WHERE store_id IS NULL").collect()
     # TODO: assert len of each equals 0 (no fact rows should have NULL foreign keys)
+    pass  # Remove this line when you are ready to implement
 
 
 def test_fact_sales_degenerate_dims(spark):
@@ -101,6 +109,7 @@ def test_fact_sales_degenerate_dims(spark):
     instore = spark.sql("SELECT * FROM gold.fact_sales WHERE order_channel = 'in-store'").collect()
     null_payment = spark.sql("SELECT * FROM gold.fact_sales WHERE payment_method IS NULL").collect()
     # TODO: assert len(online) > 0, len(instore) > 0, and len(null_payment) equals 0
+    pass  # Remove this line when you are ready to implement
 
 
 # ===========================================================================
