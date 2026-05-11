@@ -23,6 +23,7 @@ def test_stores_merge(spark):
     row = spark.sql("SELECT * FROM silver.stores WHERE store_nbr = 'S001'").collect()
     # row is a list of Row objects; row[0].name is a string
     # TODO: assert that exactly one row exists for S001 with name 'Downtown Books'
+    pass  # Remove this line when you are ready to implement
 
 
 # ---------------------------------------------------------------------------
@@ -35,6 +36,7 @@ def test_categories_merge(spark):
     fiction = spark.sql("SELECT * FROM silver.categories WHERE category_id = '1'").collect()[0]
     # space_opera and fiction are Row objects; .parent_category_id is a string
     # TODO: assert space_opera.parent_category_id and fiction.parent_category_id are correct
+    pass  # Remove this line when you are ready to implement
 
 
 # ---------------------------------------------------------------------------
@@ -47,21 +49,7 @@ def test_books_filters_invalid_isbn(spark):
     book2 = spark.sql("SELECT * FROM silver.books WHERE isbn = '978-0-00-000002-2'").collect()
     bad = spark.sql("SELECT * FROM silver.books WHERE isbn = 'BADISBN'").collect()
     # TODO: assert len(book1) equals 1, len(book2) equals 1, and len(bad) equals 0
-
-
-def test_books_trims_whitespace(spark):
-    spark.sql("""
-        INSERT INTO bronze.books VALUES
-        ('978-0-00-000099-9', '  Padded Title  ', '  Padded Author  ', ' 11 ',
-         current_timestamp(), 'books.csv')
-    """)
-    _run_silver_books(spark)
-    row = spark.sql(
-        "SELECT * FROM silver.books WHERE isbn = '978-0-00-000099-9'"
-    ).collect()
-    # row is a list of Row objects; .title, .author, .category_id are strings
-    # TODO: assert that row has exactly 1 result and row[0].title, row[0].author, row[0].category_id
-    # are trimmed of whitespace
+    pass  # Remove this line when you are ready to implement
 
 
 # ---------------------------------------------------------------------------
@@ -76,6 +64,7 @@ def test_customers_takes_most_recent(spark):
     # alice is a list of Row objects; .name, .address, .city are strings
     # TODO: assert alice has exactly 1 row (deduplication worked) and alice[0].name, .address, .city
     # match the MORE RECENT order (ONL-002, 2025-07-15): 'Alice New', '200 New Ave', 'NewCity'
+    pass  # Remove this line when you are ready to implement
 
 
 # ---------------------------------------------------------------------------
@@ -90,6 +79,7 @@ def test_orders_unified(spark):
     ins_002 = spark.sql("SELECT * FROM silver.orders WHERE order_id = 'INS-002'").collect()
     # TODO: assert len of each equals 1, and onl_001[0].order_channel equals 'online'
     # and ins_001[0].order_channel equals 'in-store'
+    pass  # Remove this line when you are ready to implement
 
 
 def test_orders_online_sentinel(spark):
@@ -99,6 +89,7 @@ def test_orders_online_sentinel(spark):
         WHERE order_channel = 'online' AND store_nbr != 'online'
     """).collect()
     # TODO: assert len(wrong_store) equals 0
+    pass  # Remove this line when you are ready to implement
 
 
 def test_orders_instore_null_email_sentinel(spark):
@@ -107,6 +98,7 @@ def test_orders_instore_null_email_sentinel(spark):
     ins_002 = spark.sql("SELECT * FROM silver.orders WHERE order_id = 'INS-002'").collect()
     # TODO: assert that ins_001[0].customer_email equals 'in-store' (NULL email became sentinel),
     # and ins_002[0].customer_email equals 'bob@example.com'
+    pass  # Remove this line when you are ready to implement
 
 
 # ---------------------------------------------------------------------------
@@ -120,6 +112,7 @@ def test_order_items_exploded(spark):
     ins_002 = spark.sql("SELECT * FROM silver.order_items WHERE order_id = 'INS-002'").collect()
     # TODO: assert len(onl_001) equals 1, len(ins_001) equals 1, and len(ins_002) equals 2
     # (INS-002 had 2 items in its JSON array, so it should explode into 2 rows)
+    pass  # Remove this line when you are ready to implement
 
 
 # ===========================================================================
@@ -145,6 +138,7 @@ def _run_silver_books(spark):
 
 
 def _run_silver_customers(spark):
+    _run_cell(spark, "silver_customers_most_recent_view")
     _run_cell(spark, "silver_customers_merge")
 
 
